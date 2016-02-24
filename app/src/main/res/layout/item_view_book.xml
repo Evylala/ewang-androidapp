@@ -9,8 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:layout_width="60dp"
@@ -26,7 +25,7 @@
             android:id="@+id/nameTextView"
             android:layout_toRightOf="@+id/coverImageView"
             android:layout_alignParentTop="true"
-            android:textSize="18sp"/>
+            android:textSize="24sp"/>
 
     </RelativeLayout>
 

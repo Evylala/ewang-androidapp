@@ -5,12 +5,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +27,7 @@ public class BooksListFragment extends Fragment {
     private static final String step0 = "This is step 0";
     private List<Book> books;
     private RecycledBookAdapter myRecycledAdapter;
+    private RecyclerView bookList;
     private OnBookDetailListener listener;
 
     @Override
@@ -46,12 +46,43 @@ public class BooksListFragment extends Fragment {
 
         this.myRecycledAdapter = new RecycledBookAdapter(books);
 
-        RecyclerView bookList = (RecyclerView) view.findViewById(R.id.my_recycler_view);
-        bookList.setHasFixedSize(true);
+        this.bookList = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+        this.bookList.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-        bookList.setLayoutManager(mLayoutManager);
+        this.bookList.setLayoutManager(mLayoutManager);
 
-        bookList.setAdapter(this.myRecycledAdapter);
+        this.bookList.setAdapter(this.myRecycledAdapter);
+
+        final GestureDetector mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+
+            @Override public boolean onSingleTapUp(MotionEvent e) {
+                return true;
+            }
+
+        });
+
+        bookList.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                View child = bookList.findChildViewUnder(e.getX(), e.getY());
+                if (child != null && mGestureDetector.onTouchEvent(e)) {
+                    Book b = books.get(bookList.getChildAdapterPosition(child));
+                    listener.onNext(b);
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        });
         return view;
     }
 
@@ -63,7 +94,7 @@ public class BooksListFragment extends Fragment {
 
     public interface OnBookDetailListener {
 
-        public void onNext();
+        public void onNext(Book book);
 
     }
 
@@ -79,7 +110,7 @@ public class BooksListFragment extends Fragment {
             @Override
             public void onResponse(Response<List<Book>> response, Retrofit retrofit) {
                 for (Book book: response.body()) {
-                    books.add(new Book(book.getTitle(), book.getPrice(), book.getCover()));
+                    books.add(book);
                 }
                 myRecycledAdapter.notifyDataSetChanged();
             }

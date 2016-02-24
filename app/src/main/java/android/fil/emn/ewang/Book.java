@@ -1,6 +1,9 @@
 package android.fil.emn.ewang;
 
-public class Book {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Book implements Parcelable {
 
     private String isbn;
     private String title;
@@ -12,6 +15,25 @@ public class Book {
         this.price = price;
         this.cover = cover;
     }
+
+    protected Book(Parcel in) {
+        isbn = in.readString();
+        title = in.readString();
+        price = in.readString();
+        cover = in.readString();
+    }
+
+    public static final Creator<Book> CREATOR = new Creator<Book>() {
+        @Override
+        public Book createFromParcel(Parcel in) {
+            return new Book(in);
+        }
+
+        @Override
+        public Book[] newArray(int size) {
+            return new Book[size];
+        }
+    };
 
     public String getIsbn() {
         return isbn;
@@ -58,7 +80,20 @@ public class Book {
 
     @Override
     public int hashCode() {
+
         return isbn.hashCode();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.title);
+        dest.writeString(this.price);
+        dest.writeString(this.cover);
     }
 }
 

@@ -13,16 +13,21 @@ public class LibraryActivity extends AppCompatActivity implements BooksListFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_library);
 
-        //boolean landscape = getResources().getBoolean(R.bool.landscape);
-
         getSupportFragmentManager().beginTransaction()
                .replace(R.id.fragments, new BooksListFragment())
                 .commit();
     }
 
     @Override
-    public void onNext() {
+    public void onNext(Book book) {
+        BookDetailFragment bookDetailFragment = new BookDetailFragment();
+        Bundle args = new Bundle();
+        args.putParcelable("BOOK", book);
+        bookDetailFragment.setArguments(args);
 
-        getSupportFragmentManager().beginTransaction();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragments, bookDetailFragment)
+                .addToBackStack(BooksListFragment.class.getSimpleName())
+                .commit();
     }
 }
