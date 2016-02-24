@@ -53,21 +53,20 @@ public class BooksListFragment extends Fragment {
 
         this.bookList.setAdapter(this.myRecycledAdapter);
 
-        final GestureDetector mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
-
+        final GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override public boolean onSingleTapUp(MotionEvent e) {
                 return true;
             }
-
         });
 
         bookList.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             @Override
             public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+
                 View child = bookList.findChildViewUnder(e.getX(), e.getY());
-                if (child != null && mGestureDetector.onTouchEvent(e)) {
-                    Book b = books.get(bookList.getChildAdapterPosition(child));
-                    listener.onNext(b);
+                if (child != null && gestureDetector.onTouchEvent(e)) {
+                    Book book = books.get(bookList.getChildAdapterPosition(child));
+                    listener.onNext(book);
                     return true;
                 }
                 return false;
@@ -75,12 +74,10 @@ public class BooksListFragment extends Fragment {
 
             @Override
             public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
             }
 
             @Override
             public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
             }
         });
         return view;
